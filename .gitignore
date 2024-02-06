@@ -153,10 +153,10 @@ dmypy.json
 cython_debug/
 
 # data
-/series-000001
+series-000001
 
 # test notebook
-main_notebook.ipynb
+notebooks/main_notebook.ipynb
 
 
 # PyCharm
