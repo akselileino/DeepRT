@@ -157,6 +157,7 @@ series-000001
 
 # test notebook
 notebooks/main_notebook.ipynb
+notebooks/test_notebook.ipynb
 
 
 # PyCharm
