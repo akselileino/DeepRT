@@ -154,6 +154,7 @@ cython_debug/
 
 # data
 series-000001
+data
 
 # test notebook
 notebooks/main_notebook.ipynb
