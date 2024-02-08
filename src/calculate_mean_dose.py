@@ -1,6 +1,6 @@
 import torch
 
-def calculate_mean_dose(dose: torch.Tensor, mask: torch.Tensor, config: dict) -> dict:
+def calculate_mean_dose(dose: torch.Tensor, mask: torch.Tensor, organ_config: dict) -> dict:
     """
     Calculate the mean dose for each organ specified in the config.
 
@@ -13,19 +13,14 @@ def calculate_mean_dose(dose: torch.Tensor, mask: torch.Tensor, config: dict) ->
     - dict: A dictionary where each key is an organ name from the config and the value is the mean dose for that organ.
     """
     mean_doses = {}
-    for organ, label in config.items():
-        # Find the mask indices where the current organ label is present
+    for organ, label in organ_config.items():
         organ_indices = (mask == label)
         
-        # If the organ is not found in the mask, skip adding it to the result dictionary
         if not organ_indices.any():
             continue
-        
-        # Calculate the mean dose for the organ
+
         organ_doses = dose[organ_indices]
-        mean_dose = organ_doses.mean().item()  # Convert to a Python float
-        
-        # Add the mean dose to the result dictionary
+        mean_dose = organ_doses.mean().item()
         mean_doses[organ] = mean_dose
     
     return mean_doses

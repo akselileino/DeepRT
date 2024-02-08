@@ -1,6 +1,6 @@
 import torch
 
-def calculate_vx(dose, mask, config, x):
+def calculate_vx(dose, mask, organ_config, threshold):
     """Calculates the percentage of volume receiving at least dose X for each organ.
 
     This function computes the volume receiving a dose at least as high as X Gray (Gy) for
@@ -12,7 +12,7 @@ def calculate_vx(dose, mask, config, x):
         mask_tensor (torch.Tensor): A tensor of the same shape as dose_tensor, where each
             element's value corresponds to an organ identifier.
         config (dict): A mapping from organ names (str) to their corresponding mask values (int).
-        x (float): The dose level (in Gray) for which to calculate the volume percentages.
+        threshold (float): The dose level (in Gray) for which to calculate the volume percentages.
 
     Returns:
         dict: A dictionary where keys are organ names and values are the percentages of
@@ -20,23 +20,11 @@ def calculate_vx(dose, mask, config, x):
     """
     vx_dict = {}
 
-    for organ, mask_value in config.items():
-        # Mask for the current         
+    for organ, mask_value in organ_config.items():
         organ_mask = (mask == mask_value)
-
-        # Mask for the organ where the dose is >= x
-        organ_dose_mask = organ_mask & (dose >= x)
-        
-        # Calculate the volume receiving at least dose x
-        organ_volume_x = torch.sum(organ_dose_mask).item()
-        
-        # Total organ volume
+        organ_dose_mask = organ_mask & (dose >= threshold)
+        organ_volume_over_threshold = torch.sum(organ_dose_mask).item()
         total_organ_volume = torch.sum(organ_mask).item()
-        
-        # Calculate the percentage
-        percentage = (organ_volume_x / total_organ_volume) * 100 if total_organ_volume > 0 else 0
-        
-        # Update the dictionary with the calculatedpercentage
+        percentage = (organ_volume_over_threshold  / total_organ_volume) * 100 if total_organ_volume > 0 else 0
         vx_dict[organ] = percentage
-
     return vx_dict
